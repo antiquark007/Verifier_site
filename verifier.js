@@ -3,7 +3,7 @@
 // - If hash payload starts with "http", fetch JSON+sig from that URL (online mode)
 // - Else, treat hash as compressed+base64url JSON+sig (offline-in-browser mode)
 
-import { inflateFromBase64Url, sha256Digest, importSpkiKey, verifyPkcs1v15 } from "./webcrypto_utils.js";
+import { inflateFromBase64Url, sha256Digest, importSpkiKey, verifyPkcs1v15 } from "./crypt.js";
 
 // Paste your PEM public key here or fetch it; converted to SPKI DER (base64) is ideal.
 // For simplicity, we accept PEM and convert to SPKI using a tiny helper.
