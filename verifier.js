@@ -62,10 +62,15 @@ function canonicalJSONString(obj) {
 
 async function verifyCertObject(certObj, sigB64, publicKey) {
   const data = canonicalJSONString(certObj);
+  console.log("=== Canonical JSON in verifier ===");
+  console.log(data);
+  console.log("=== END ===");
+  console.log("Signature (base64):", sigB64);
   const dataBytes = new TextEncoder().encode(data);
   const ok = await verifyPkcs1v15(publicKey, dataBytes, sigB64);
   return ok;
 }
+
 
 async function runHashFlow() {
   try {
