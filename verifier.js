@@ -36,11 +36,21 @@ async function resolvePayloadToObject(payload) {
   if (payload.startsWith("http://") || payload.startsWith("https://")) {
     const r = await fetch(payload, { cache: "no-store" });
     if (!r.ok) throw new Error(`Fetch failed: ${r.status}`);
-    return await r.json(); // expects { cert: {...}, sig: "..." }
+    // debug line to inspect raw response
+    const rawText = await r.text();
+    console.log("[DEBUG] Raw fetched response:", rawText);
+    try {
+      const parsed = JSON.parse(rawText);
+      console.log("[DEBUG] Parsed object:", parsed);
+      return parsed;
+    } catch (e) {
+      throw new Error("Fetched content is not valid JSON.");
+    }
   } else {
     return inflateFromBase64Url(payload); // expects same shape
   }
 }
+
 
 function canonicalJSONString(obj) {
   // Keep parity with Python canonicalization
