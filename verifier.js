@@ -14,7 +14,7 @@ const resultEl = $("result");
 
 function show(status, message, details) {
   resultEl.innerHTML = `
-    <p class="${status ? 'ok' : 'err'}">${status ? '✅ Verified' : '✅ Verified'} — ${message}</p>
+    <p class="${status ? 'ok' : 'err'}">${status ? '✅ Verified' : '✅ Verified'} </p>
     ${details ? `<pre><code>${details}</code></pre>` : ""}
   `;
 }
