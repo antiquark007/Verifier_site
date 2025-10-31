@@ -6,379 +6,69 @@
   <title>Secure Wipe Verifier</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    :root{
-      --bg-1: #0f1724;
-      --bg-2: #071029;
-      --card-bg: rgba(255,255,255,0.04);
-      --glass-border: rgba(255,255,255,0.06);
-      --muted: rgba(255,255,255,0.7);
-      --accent-1: #4ade80; /* green */
-      --accent-2: #60a5fa; /* blue */
-      --danger: #ff6b6b;
-      --radius: 14px;
-      --glass-blur: 10px;
-      --shadow: 0 8px 30px rgba(3,7,18,0.7);
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-
-    /* Background */
-    html,body{
-      height:100%;
-      margin:0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(1200px 600px at 10% 10%, rgba(96,165,250,0.08), transparent),
-                  radial-gradient(800px 500px at 90% 90%, rgba(74,222,128,0.04), transparent),
-                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
-      color: #e6eef8;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .container{
-      max-width: 980px;
-      margin: 48px auto;
-      padding: 28px;
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 24px;
     }
 
     .card {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      padding: 28px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(var(--glass-blur)) saturate(120%);
-      overflow: hidden;
+      max-width: 760px;
+      margin: 0 auto;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 16px;
     }
 
-    header {
-      display:flex;
-      gap:16px;
-      align-items:center;
-      margin-bottom: 8px;
+    .row {
+      margin: 12px 0;
     }
 
-    .logo {
-      width:56px;
-      height:56px;
-      display:grid;
-      place-items:center;
-      border-radius:12px;
-      background:linear-gradient(135deg,var(--accent-2),var(--accent-1));
-      box-shadow: 0 6px 18px rgba(64,130,206,0.18), inset 0 -6px 16px rgba(255,255,255,0.06);
-      flex: 0 0 56px;
+    .ok {
+      color: #0a7f2e;
     }
 
-    .logo svg { filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); }
-
-    h1 {
-      font-size: 20px;
-      margin:0;
-      letter-spacing: -0.2px;
+    .err {
+      color: #b00020;
     }
-
-    p.lead {
-      margin:6px 0 18px 0;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .grid {
-      display:grid;
-      gap:14px;
-      grid-template-columns: 1fr 320px;
-    }
-
-    @media (max-width:860px){
-      .grid{ grid-template-columns: 1fr; }
-      header { gap:12px; }
-    }
-
-    .form-row{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-
-    label {
-      font-size:13px;
-      color: #dbe9ff;
-      display:block;
-    }
-
-    input[type="text"]{
-      padding:12px 14px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.06);
-      background: linear-gradient(180deg, rgba(255,255,255,0.012), transparent);
-      color: #e9f2ff;
-      outline:none;
-      transition: box-shadow .18s, transform .06s;
-      font-size:14px;
-    }
-    input[type="text"]:focus{
-      box-shadow: 0 6px 30px rgba(96,165,250,0.08), inset 0 1px 0 rgba(255,255,255,0.02);
-      transform: translateY(-1px);
-    }
-
-    .controls {
-      display:flex;
-      gap:10px;
-      align-items:center;
-      margin-top:6px;
-      flex-wrap:wrap;
-    }
-
-    button {
-      cursor:pointer;
-      border:0;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:600;
-      font-size:14px;
-      color:#04243a;
-      background:linear-gradient(90deg,var(--accent-1),var(--accent-2));
-      box-shadow: 0 8px 26px rgba(37,99,235,0.12);
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    button:hover{ transform: translateY(-2px); }
-    button:active{ transform: translateY(0); box-shadow:none; }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid rgba(255,255,255,0.04);
-      box-shadow: none;
-    }
-
-    /* File input styling (modern) */
-    input[type="file"]{
-      color: transparent;
-      height:44px;
-      width:100%;
-      padding:10px 12px;
-      border-radius:10px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
-      border:1px dashed rgba(255,255,255,0.04);
-      cursor:pointer;
-    }
-    /* better file button appearance in browsers that support it */
-    input[type="file"]::file-selector-button{
-      margin:0;
-      padding:8px 12px;
-      border-radius:8px;
-      border:0;
-      background: linear-gradient(90deg,var(--accent-2),var(--accent-1));
-      color:#04243a;
-      font-weight:600;
-    }
-
-    .meta {
-      font-size:13px;
-      color:var(--muted);
-    }
-
-    hr.sep {
-      border:0;
-      height:1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-      margin:18px 0;
-      border-radius:2px;
-    }
-
-    /* result area */
-    #result {
-      margin-top:18px;
-      padding:14px;
-      border-radius:10px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));
-      border:1px solid rgba(255,255,255,0.03);
-      color:var(--muted);
-      min-height:48px;
-      display:flex;
-      align-items:center;
-      gap:12px;
-      flex-wrap:wrap;
-    }
-
-    .status {
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:8px 12px;
-      border-radius:999px;
-      background: rgba(255,255,255,0.02);
-      color:var(--muted);
-      font-weight:600;
-      font-size:13px;
-    }
-
-    .status.ok { color: var(--accent-1); background: rgba(74,222,128,0.06); border:1px solid rgba(74,222,128,0.06); }
-    .status.err { color: var(--danger); background: rgba(255,107,107,0.06); border:1px solid rgba(255,107,107,0.06); }
 
     code {
-      background: rgba(255,255,255,0.02);
-      padding:6px 8px;
-      border-radius:8px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
-      font-size:13px;
-      color: #d9f0ff;
-    }
-
-    .muted-small { color:var(--muted); font-size:13px; }
-
-    footer {
-      margin-top:18px;
-      color:var(--muted);
-      font-size:13px;
-      display:flex;
-      justify-content:space-between;
-      gap:12px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .hint {
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .small-cta {
-      font-size:13px;
-      padding:8px 12px;
-      border-radius:10px;
-    }
-
-    /* subtle entrance animation */
-    .card { transform: translateY(6px); opacity:0; animation: enter .45s ease forwards .06s; }
-    @keyframes enter {
-      to { transform: translateY(0); opacity:1; }
+      background: #f6f8fa;
+      padding: 2px 6px;
+      border-radius: 4px;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <div class="card" role="region" aria-labelledby="app-title">
-      <header>
-        <div class="logo" aria-hidden="true">
-          <!-- small shield+check icon -->
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M12 2l7 3v5c0 6-4.5 10.5-7 12-2.5-1.5-7-6-7-12V5l7-3z" fill="white" opacity="0.12"/>
-            <path d="M10.5 13.5l1.8 1.8 4-5" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+  <div class="card">
+    <h2>Secure Wipe Certificate Verifier</h2>
+    <p>Scan a certificate QR or paste a link/payload below. You can also upload files.</p>
 
-        <div>
-          <h1 id="app-title">Secure Wipe Certificate Verifier</h1>
-          <p class="lead">Scan a certificate QR or paste the hash fragment below. You can also upload a certificate PDF for verification.</p>
-        </div>
-      </header>
-
-      <div class="grid" role="form" aria-label="Verifier form">
-        <div>
-          <div class="form-row">
-            <label for="hashInput">Hash fragment payload (auto-filled when scanning QR)</label>
-            <input id="hashInput" type="text" placeholder="Will auto-fill from URL #fragment" aria-describedby="hashHelp" />
-            <div class="muted-small" id="hashHelp">Paste a URL fragment or raw payload. The verifier reads signed payloads and checks the certificate fingerprint.</div>
-          </div>
-
-          <div class="form-row">
-            <div class="controls" style="margin-top:8px;">
-              <button id="verifyBtn" class="small-cta" title="Verify payload from the hash fragment">Verify</button>
-              <button id="clearBtn" class="btn-ghost small-cta" title="Clear inputs">Clear</button>
-              <span class="meta" style="margin-left:6px;">or drop a PDF on the right to verify</span>
-            </div>
-          </div>
-
-          <hr class="sep" />
-
-          <div class="form-row">
-            <label for="jsonFile">Upload certificate PDF</label>
-            <input id="jsonFile" type="file" accept="application/pdf" aria-describedby="fileHelp" />
-            <div class="muted-small" id="fileHelp">Supported: PDF certificates. Max file size depends on your browser. No files are uploaded to servers by this UI.</div>
-          </div>
-
-          <div class="form-row">
-            <div class="controls">
-              <button id="verifyFilesBtn" class="small-cta" title="Verify uploaded PDF">Verify Uploaded PDF</button>
-              <button id="helpBtn" class="btn-ghost small-cta" title="How to get a certificate QR">How it works</button>
-            </div>
-          </div>
-        </div>
-
-        <aside aria-label="status and quick info">
-          <div id="result" aria-live="polite">
-            <div style="display:flex;flex-direction:column;gap:6px;">
-              <span class="status" style="background:transparent;border:0;padding:0;font-weight:600;color:var(--muted);">Ready</span>
-              <div class="muted-small">Results will appear here after verification. Timestamps, signer fingerprint, and status will be shown.</div>
-            </div>
-          </div>
-
-          <footer>
-            <div class="hint">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-                <path d="M12 2v2" stroke="white" stroke-opacity="0.6" stroke-width="1.4" stroke-linecap="round"/>
-                <path d="M12 20v2" stroke="white" stroke-opacity="0.6" stroke-width="1.4" stroke-linecap="round"/>
-                <path d="M4 10.5c0 6 4.5 10.5 8 11 3.5-.5 8-5 8-11V7l-8-4-8 4v3.5z" stroke="white" stroke-opacity="0.06" stroke-width="1.2" fill="white" />
-              </svg>
-              <span>Offline-first · Privacy-focused</span>
-            </div>
-
-            <div style="display:flex;gap:8px;align-items:center;">
-              <span class="muted-small">v1.0</span>
-              <button class="btn-ghost" id="exportBtn" title="Export report (not implemented)">Export</button>
-            </div>
-          </footer>
-        </aside>
-      </div>
+    <div class="row">
+      <label>Hash fragment payload (auto-filled when scanning QR):</label>
+      <input id="hashInput" type="text" style="width:100%" placeholder="Will auto-fill from URL #fragment" />
     </div>
+
+    <div class="row">
+      <button id="verifyBtn">Verify</button>
+    </div>
+
+    <hr />
+
+    <div class="row">
+      <label>Upload certificate PDF:</label><br />
+      <input id="jsonFile" type="file" accept="application/pdf" />
+    </div>
+
+    <div class="row">
+      <button id="verifyFilesBtn">Verify Uploaded PDF</button>
+    </div>
+
+
+    <div class="row" id="result"></div>
   </div>
 
-  <!-- Keep original verifier logic; loaded as module. UI improvements are purely presentational and keep element IDs intact. -->
   <script type="module" src="verifier.js"></script>
-
-  <script>
-    // Small UI helpers (non-invasive): clear button and help dialog
-    (function(){
-      const clearBtn = document.getElementById('clearBtn');
-      const hashInput = document.getElementById('hashInput');
-      const result = document.getElementById('result');
-      const helpBtn = document.getElementById('helpBtn');
-      const exportBtn = document.getElementById('exportBtn');
-
-      clearBtn?.addEventListener('click', () => {
-        hashInput.value = '';
-        result.innerHTML = '<div class="muted-small">Cleared. Ready for a new verification.</div>';
-        hashInput.focus();
-      });
-
-      helpBtn?.addEventListener('click', () => {
-        result.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">
-          <strong style="color:var(--muted);">How to verify</strong>
-          <div class="muted-small">1) Scan the certificate QR to auto-fill the hash fragment (URL fragment/hash). 2) Click Verify to validate the signed payload. 3) Or upload the certificate PDF and click Verify Uploaded PDF.</div>
-        </div>`;
-      });
-
-      exportBtn?.addEventListener('click', () => {
-        result.innerHTML = '<div class="muted-small">Export is not available yet — coming soon.</div>';
-      });
-
-      // When the page loads, if there's a URL fragment, auto-fill the hash input
-      if (location.hash && location.hash.length > 1) {
-        try {
-          const frag = decodeURIComponent(location.hash.slice(1));
-          hashInput.value = frag;
-        } catch (e) {
-          hashInput.value = location.hash.slice(1);
-        }
-      }
-    })();
-  </script>
 </body>
 
 </html>
